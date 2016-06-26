@@ -1,0 +1,25 @@
+# Makefile template for shared library
+
+CC = gcc # C compiler
+CFLAGS = -fPIC -Wall -Wextra -O2 -g # C flags
+LDFLAGS = # linking flags
+RM = rm -f  # rm command
+TARGET_EXEC = target # target lib
+
+SRCS = main.c src1.c src2.c # source files
+OBJS = $(SRCS:.c=.o)
+
+.PHONY: all
+all: ${TARGET_EXEC}
+
+$(TARGET_EXEC): $(OBJS)
+               $(CC) ${LDFLAGS} -o $@ $^
+
+$(SRCS:.c=.d):%.d:%.c
+        $(CC) $(CFLAGS) -MM $< >$@
+
+include $(SRCS:.c=.d)
+
+.PHONY: clean
+clean:
+	-${RM} ${TARGET_EXEC} ${OBJS} $(SRCS:.c=.d)
